@@ -1,0 +1,51 @@
+<html lang="en">
+<head>
+  <title>MaptimeSEA Geocoder</title>
+  <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+</head>
+<body>
+  <input type="text" id="address">
+  <input type="submit" value="GEOCODE!" onclick="getAddress();">
+
+  <script>
+  var address, results;
+
+  // Get address input value and pass it through the
+  // geocode() function
+  function getAddress() {
+    address = document.getElementById('address').value;
+    geocode(address);
+    return false; // this prevents the page from refreshing when the user presses 'submit'
+  }
+
+  // Send the address value through the census geocoder HTTP
+  // route with the most recent set of benchmarks '4' and return
+  // as JSONP to satisfy Browser Cross Origin issues.
+  //
+  // SUCCESS: If the response comes back positive, send it through
+  // the map() function with the response callback of 'res'.
+  // 
+  // ERROR: If there is an error in the response, log the error in
+  // the console.
+  function geocode(val) {
+    console.log(val);
+    $.ajax({
+      url: 'http://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address='+val+'&benchmark=4&format=jsonp',
+      dataType: 'jsonp',
+      success: map,
+      error: function(err) {
+        console.error(err);
+      }
+    })
+  }
+
+  // Set the positive response object to the variable 'results',
+  // which can be used in the rest of your scripts.
+  function map(res) {
+    results = res;
+    console.log(results); // log results to the console
+  }
+
+  </script>
+</body>
+</html>
