@@ -4,91 +4,22 @@
   <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
   <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.5/mapbox.js'></script>
   <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.5/mapbox.css' rel='stylesheet' />
-  <style>
-  body {
-    margin:0;
-    padding:0;
-  }
-  #nav {
-    position:fixed;
-    top:0;
-    width:100%;
-    background:rgba(255,255,255,0.9);
-    padding:10px 0;
-    text-align:center;
-    z-index: 10;
-  }
-  #map {
-    position:absolute;
-    width:100%;
-    height:100%;
-  }
-
-  </style>
+  <link href='public/geocoder.css' rel='stylesheet' />
 </head>
 <body>
   <div id="nav">
     <input type="text" id="address">
-    <input type="submit" value="GEOCODE!" onclick="geocode();">
+    <input type="submit" value="GEOCODE!" id="geocode">
   </div>
   <div id="map"></div>
 
+  <script src="public/geocoder.js"></script>
   <script>
-  var address, results;
+  window.onload = init();
 
-  // Initiate a map on the page using mapbox.js
-  L.mapbox.accessToken = 'pk.eyJ1Ijoic3ZtYXR0aGV3cyIsImEiOiJVMUlUR0xrIn0.NweS_AttjswtN5wRuWCSNA';
-  var map = L.mapbox.map('map', 'svmatthews.hf8pfph5').setView([0,0], 2);
-
-  // Send the address value through the census geocoder HTTP
-  // route with the most recent set of benchmarks '4' and return
-  // as JSONP to satisfy Browser Cross Origin issues.
-  //
-  // SUCCESS: If the response comes back positive, send it through
-  // the map() function with the response callback of 'res'.
-  // 
-  // ERROR: If there is an error in the response, log the error in
-  // the console.
-  function geocode() {
-    address = document.getElementById('address').value;
-    console.log(address);
-    $.ajax({
-      url: 'http://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address='+address+'&benchmark=4&format=jsonp',
-      dataType: 'jsonp',
-      success: function(res) {
-        addPoint(res);
-      },
-      error: function(err) {
-        console.error(err);
-      }
-    });
-    return false;
+  function init () {
+    window.G = new Geocoder();
   }
-
-  // Add a marker to 'map' using the properties returned from the Census
-  // geocoder.
-  function addPoint(data) {
-    console.log(data);
-    L.mapbox.featureLayer({
-      type: 'Feature',
-      geometry: {
-          type: 'Point',
-          coordinates: [
-            data.result.addressMatches[0].coordinates.x,
-            data.result.addressMatches[0].coordinates.y 
-          ]
-      },
-      properties: {
-          title: address,
-          description: 'Data from the Census <a href="http://geocoding.geo.census.gov/geocoder/">Geocoder</a>.',
-          'marker-size': 'large',
-          'marker-color': '#BE9A6B',
-          'marker-symbol': 'star'
-      }
-    }).addTo(map).openPopup();
-    map.setView([data.result.addressMatches[0].coordinates.y, data.result.addressMatches[0].coordinates.x], 14);
-  }
-
-  </script>
+</script>
 </body>
 </html>
