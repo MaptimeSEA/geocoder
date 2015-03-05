@@ -4,14 +4,27 @@
   <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
   <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.5/mapbox.js'></script>
   <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.5/mapbox.css' rel='stylesheet' />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  <link href='http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900,100italic,300italic,400italic,700italic,900italic' rel='stylesheet' type='text/css'>
   <link href='public/geocoder.css' rel='stylesheet' />
 </head>
 <body>
-  <div id="nav">
-    <input type="text" id="address">
-    <input type="submit" value="GEOCODE!" id="geocode">
-  </div>
   <div id="map"></div>
+  <div id="info">
+    
+    <div id="search">
+      <input type="text" id="address" placeholder="Search an address...">
+
+      <button type="button" id="geocode">Geocode</button>
+    </div>
+
+    <div id="introduction"></div>
+
+    <ul id="address-list"></ul>
+
+    <a id="download-json" href="" download="addresses.json">json</a>
+
+  </div>
 
   <script src="public/geocoder.js"></script>
   <script>
