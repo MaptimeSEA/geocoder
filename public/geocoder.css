@@ -160,6 +160,23 @@ body {
 }
 #address-list li:hover,
 #address-list li:hover * {
-  background-color:steelblue;
-  color:#f6f6f6;
+  background-color:#f6f6f6;
+}
+#address-list li:hover .remove {
+  opacity:1;
+}
+.remove {
+  float:right;
+  border:none;
+  background:transparent;
+  opacity:0;
+  cursor:pointer;
+}
+.remove:hover {
+  opacity:1;
+}
+.remove:before {
+  font:normal normal normal 14px/1 FontAwesome;
+  color:#FF4136;
+  content: "\f00d";
 }

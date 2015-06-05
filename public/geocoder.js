@@ -47,6 +47,7 @@ Geocoder.prototype.events = function () {
     var input = document.getElementById('address').value;
     if (e.keyCode == 13) this.geocode(input);
   }.bind(this), false);
+
 }
 
 /*
@@ -100,6 +101,7 @@ Geocoder.prototype.createNewAddress = function (response) {
     var point = this.addPoint(newAddress);
 
     // add an id to the newAddress json for future use
+    newAddress.point = point;
     newAddress.id = point._leaflet_id;
 
     // create nice address but save response from census
@@ -122,8 +124,9 @@ Geocoder.prototype.downloadJson = function() {
 
 Geocoder.prototype.addAddressToList = function(address) {
   var li = document.createElement('li');
-  li.id = address.id;
-  li.innerHTML = '<p class="address-name">'+address.address+'</p>';
+  li.id = 'address-'+address.id;
+  li.innerHTML = '<button class="remove" id="'+address.id+'" type="button" onclick="G.removeAddress(this.id)"></button>';
+  li.innerHTML += '<p class="address-name">'+address.address+'</p>';
   li.innerHTML += '<p class="address-coordinates">'+address.coordinates.lng+', '+address.coordinates.lat+'</p>';
   this.list.insertBefore(li, this.list.firstChild);
 }
@@ -169,4 +172,21 @@ Geocoder.prototype.ui = {
     }, 1000);
   }
 
+}
+
+Geocoder.prototype.removeAddress = function(id) {
+  console.log(id, this);
+  for ( var a = 0; a < this.addresses.length; a++ ) {
+    console.log(this.addresses[a].id, id);
+    if (this.addresses[a].id == id) {
+      console.info('REMOVING ADDRESS');
+      // remove from map
+      this.map.removeLayer(this.addresses[a].point);
+      // remove from list
+      var listElement = document.getElementById('address-'+id);
+      this.list.removeChild(listElement);
+      // remove from addresses
+      delete this.addresses[a];
+    }
+  }
 }
