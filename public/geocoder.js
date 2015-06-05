@@ -1,7 +1,6 @@
 'use strict';
 
 var Geocoder = function () {
-  console.log(this);
 
   // used to store all of the successfully geocoded
   // addresses as an array of objects
@@ -97,13 +96,17 @@ Geocoder.prototype.createNewAddress = function (response) {
       }
     }
 
+    // create point on the map
+    var point = this.addPoint(newAddress);
+
+    // add an id to the newAddress json for future use
+    newAddress.id = point._leaflet_id;
+
     // create nice address but save response from census
     this.addresses.push(newAddress);
 
-    // create point on the map
-    this.addPoint(newAddress);
-
     // add the address information to the list
+    // also send along the leaflet id so we can do some matching later
     this.addAddressToList(newAddress);
 
     // update download-json with new objects
@@ -119,13 +122,14 @@ Geocoder.prototype.downloadJson = function() {
 
 Geocoder.prototype.addAddressToList = function(address) {
   var li = document.createElement('li');
+  li.id = address.id;
   li.innerHTML = '<p class="address-name">'+address.address+'</p>';
   li.innerHTML += '<p class="address-coordinates">'+address.coordinates.lng+', '+address.coordinates.lat+'</p>';
   this.list.insertBefore(li, this.list.firstChild);
 }
 
 Geocoder.prototype.addPoint = function (address) {
-  L.mapbox.featureLayer({
+  var newPoint = L.mapbox.featureLayer({
     type: 'Feature',
     geometry: {
         type: 'Point',
@@ -141,6 +145,8 @@ Geocoder.prototype.addPoint = function (address) {
         'marker-symbol': 'star'
     }
   }).addTo(this.map).openPopup();
+
+  return newPoint;
   // this is a good point to reset the map view based on the current points
 }
 
